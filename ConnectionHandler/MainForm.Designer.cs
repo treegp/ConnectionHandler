@@ -35,7 +35,7 @@
             this.UserIdTextBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.PasswordTextBox = new System.Windows.Forms.TextBox();
-            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
+            this.TablesCheckedListBox = new System.Windows.Forms.CheckedListBox();
             this.label3 = new System.Windows.Forms.Label();
             this.DatabasesComboBox = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
@@ -103,13 +103,13 @@
             this.PasswordTextBox.Size = new System.Drawing.Size(100, 22);
             this.PasswordTextBox.TabIndex = 3;
             // 
-            // checkedListBox1
+            // TablesCheckedListBox
             // 
-            this.checkedListBox1.FormattingEnabled = true;
-            this.checkedListBox1.Location = new System.Drawing.Point(28, 89);
-            this.checkedListBox1.Name = "checkedListBox1";
-            this.checkedListBox1.Size = new System.Drawing.Size(684, 378);
-            this.checkedListBox1.TabIndex = 5;
+            this.TablesCheckedListBox.FormattingEnabled = true;
+            this.TablesCheckedListBox.Location = new System.Drawing.Point(28, 89);
+            this.TablesCheckedListBox.Name = "TablesCheckedListBox";
+            this.TablesCheckedListBox.Size = new System.Drawing.Size(684, 378);
+            this.TablesCheckedListBox.TabIndex = 5;
             // 
             // label3
             // 
@@ -129,6 +129,7 @@
             this.DatabasesComboBox.Name = "DatabasesComboBox";
             this.DatabasesComboBox.Size = new System.Drawing.Size(495, 24);
             this.DatabasesComboBox.TabIndex = 6;
+            this.DatabasesComboBox.SelectedIndexChanged += new System.EventHandler(this.DatabasesComboBox_SelectedIndexChanged);
             // 
             // MainForm
             // 
@@ -136,7 +137,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(739, 592);
             this.Controls.Add(this.DatabasesComboBox);
-            this.Controls.Add(this.checkedListBox1);
+            this.Controls.Add(this.TablesCheckedListBox);
             this.Controls.Add(this.PasswordTextBox);
             this.Controls.Add(this.UserIdTextBox);
             this.Controls.Add(this.DataSourceTextBox);
@@ -161,7 +162,7 @@
         private System.Windows.Forms.TextBox UserIdTextBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox PasswordTextBox;
-        private System.Windows.Forms.CheckedListBox checkedListBox1;
+        private System.Windows.Forms.CheckedListBox TablesCheckedListBox;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox DatabasesComboBox;
     }

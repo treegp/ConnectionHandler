@@ -25,14 +25,11 @@ namespace ConnectionHandler
                 UserIdTextBox.Focus();
         }
 
-        private void ConnectButton_Click(object sender, EventArgs e)
+        private string GetConnectionString(string dbName)
         {
-            DatabasesComboBox.Enabled = false;
-            DatabasesComboBox.Items.Clear();
-
             var conStr = new SqlConnectionStringBuilder();
             conStr.DataSource = DataSourceTextBox.Text;
-            conStr.InitialCatalog = "master";
+            conStr.InitialCatalog = dbName;
             if (UserIdCheckBox.Checked)
             {
                 conStr.IntegratedSecurity = false;
@@ -40,12 +37,20 @@ namespace ConnectionHandler
                 conStr.Password = PasswordTextBox.Text;
             }
             else
-                conStr.IntegratedSecurity=true;
+                conStr.IntegratedSecurity = true;
+
+            return conStr.ConnectionString;
+
+        }
 
 
 
+        private void ConnectButton_Click(object sender, EventArgs e)
+        {
+            DatabasesComboBox.Enabled = false;
+            DatabasesComboBox.Items.Clear();
 
-            using (var con = new SqlConnection(conStr.ConnectionString))
+            using (var con = new SqlConnection(GetConnectionString("master")))
             {
                 con.Open();
                 var com = new SqlCommand();
@@ -53,17 +58,33 @@ namespace ConnectionHandler
                 com.CommandText = "select * from sys.databases";
                 var reader = com.ExecuteReader();
 
-
                 while (reader.Read())
                 {
                     DatabasesComboBox.Enabled = true;
                     DatabasesComboBox.Items.Add(reader["name"]);
                 }
 
+            }
+        }
 
+        private void DatabasesComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TablesCheckedListBox.Items.Clear();
+
+            using (var con = new SqlConnection(GetConnectionString(DatabasesComboBox.SelectedItem.ToString())))
+            {
+                con.Open();
+                var com = new SqlCommand();
+                com.Connection = con;
+                com.CommandText = "select * from INFORMATION_SCHEMA.TABLES";
+                var reader = com.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    TablesCheckedListBox.Items.Add(reader["table_schema"] + "." + reader["table_name"]);
+                }
 
             }
-
 
 
 
