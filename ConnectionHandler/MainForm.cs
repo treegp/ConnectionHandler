@@ -141,7 +141,7 @@ namespace ConnectionHandler
                 
                 var comPrimaryKey = new SqlCommand();
                 comPrimaryKey.Connection = con;
-                comPrimaryKey.CommandText = "select ccu.COLUMN_NAME from INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ccu inner join INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc on tc.CONSTRAINT_NAME =  ccu.CONSTRAINT_NAME where tc.CONSTRAINT_TYPE = N'PRIMARY KEY' and ccu.TABLE_SCHEMA = N'dbo' and ccu.TABLE_NAME = N'backupfile'";
+                comPrimaryKey.CommandText = "select ccu.COLUMN_NAME from INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ccu inner join INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc on tc.CONSTRAINT_NAME =  ccu.CONSTRAINT_NAME where tc.CONSTRAINT_TYPE = N'PRIMARY KEY' and ccu.TABLE_SCHEMA = N'"+tableschema+"' and ccu.TABLE_NAME = N'"+tablename+"'";
                 var readerPrimaryKey = comPrimaryKey.ExecuteReader();
 
                 while(readerPrimaryKey.Read())
@@ -158,13 +158,12 @@ namespace ConnectionHandler
 
                 while (readerName.Read())
                 {
-                    
-
                     var columnItems = new ColumnItems
                     {
                         Name = readerName["COLUMN_NAME"].ToString(),
                         Type = readerName["DATA_TYPE"].ToString(),
-                        IsNullable = readerName["IS_NULLABLE"].ToString() == "YES"
+                        IsNullable = readerName["IS_NULLABLE"].ToString() == "YES",
+                        IsPrimaryKey = primaryKeys.Contains(readerName["COLUMN_NAME"].ToString())
                         
                     };
 
