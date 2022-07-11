@@ -122,9 +122,9 @@ namespace ConnectionHandler
 
             var folder = folderDialog.SelectedPath;
 
-            foreach(var item in TablesCheckedListBox.SelectedItems)
+            foreach (var item in TablesCheckedListBox.CheckedItems)
             {
-
+                var c = GetColumnItems(item.ToString().Split('.')[0], item.ToString().Split('.')[1]);
             }
 
         }
@@ -132,24 +132,33 @@ namespace ConnectionHandler
         private List<ColumnItems> GetColumnItems(string tableschema, string tablename)
         {
             List<string> primaryKeys = new List<string>();
+            List<string> computedColumns = new List<string>();
             List<ColumnItems> columnsItems = new List<ColumnItems>();
-
 
             using (var con = new SqlConnection(GetConnectionString(DatabasesComboBox.SelectedItem.ToString())))
             {
                 con.Open();
-                
+
                 var comPrimaryKey = new SqlCommand();
                 comPrimaryKey.Connection = con;
-                comPrimaryKey.CommandText = "select ccu.COLUMN_NAME from INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ccu inner join INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc on tc.CONSTRAINT_NAME =  ccu.CONSTRAINT_NAME where tc.CONSTRAINT_TYPE = N'PRIMARY KEY' and ccu.TABLE_SCHEMA = N'"+tableschema+"' and ccu.TABLE_NAME = N'"+tablename+"'";
+                comPrimaryKey.CommandText = "select ccu.COLUMN_NAME from INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ccu inner join INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc on tc.CONSTRAINT_NAME =  ccu.CONSTRAINT_NAME where tc.CONSTRAINT_TYPE = N'PRIMARY KEY' and ccu.TABLE_SCHEMA = N'" + tableschema + "' and ccu.TABLE_NAME = N'" + tablename + "'";
                 var readerPrimaryKey = comPrimaryKey.ExecuteReader();
 
-                while(readerPrimaryKey.Read())
+                while (readerPrimaryKey.Read())
                 {
                     primaryKeys.Add(readerPrimaryKey["COLUMN_NAME"].ToString());
                 }
 
+                var comComputed = new SqlCommand();
+                comComputed.Connection = con;
+                comComputed.CommandText = "select name,is_identity,is_computed from sys.all_columns where object_id=object_id(N'" + tableschema + "." + tablename + "')";
+                var readerComputed = comComputed.ExecuteReader();
 
+                while (readerComputed.Read())
+                {
+                    if (readerComputed["is_identity"].ToString() == "1" | readerComputed["is_computed"].ToString() == "1")
+                        computedColumns.Add(readerComputed["name"].ToString());
+                }
 
                 var comName = new SqlCommand();
                 comName.Connection = con;
@@ -163,8 +172,8 @@ namespace ConnectionHandler
                         Name = readerName["COLUMN_NAME"].ToString(),
                         Type = readerName["DATA_TYPE"].ToString(),
                         IsNullable = readerName["IS_NULLABLE"].ToString() == "YES",
-                        IsPrimaryKey = primaryKeys.Contains(readerName["COLUMN_NAME"].ToString())
-                        
+                        IsPrimaryKey = primaryKeys.Contains(readerName["COLUMN_NAME"].ToString()),
+                        IsComputed = computedColumns.Contains(readerName["COLUMN_NAME"].ToString())
                     };
 
                     columnsItems.Add(columnItems);
