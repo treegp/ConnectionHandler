@@ -46,7 +46,7 @@
             // 
             // ConnectButton
             // 
-            this.ConnectButton.Location = new System.Drawing.Point(469, 14);
+            this.ConnectButton.Location = new System.Drawing.Point(480, 11);
             this.ConnectButton.Margin = new System.Windows.Forms.Padding(2);
             this.ConnectButton.Name = "ConnectButton";
             this.ConnectButton.Size = new System.Drawing.Size(75, 23);
@@ -58,7 +58,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(19, 19);
+            this.label1.Location = new System.Drawing.Point(20, 15);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(67, 13);
@@ -67,16 +67,16 @@
             // 
             // DataSourceTextBox
             // 
-            this.DataSourceTextBox.Location = new System.Drawing.Point(85, 16);
+            this.DataSourceTextBox.Location = new System.Drawing.Point(86, 11);
             this.DataSourceTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.DataSourceTextBox.Name = "DataSourceTextBox";
-            this.DataSourceTextBox.Size = new System.Drawing.Size(76, 20);
+            this.DataSourceTextBox.Size = new System.Drawing.Size(371, 20);
             this.DataSourceTextBox.TabIndex = 0;
             // 
             // UserIdCheckBox
             // 
             this.UserIdCheckBox.AutoSize = true;
-            this.UserIdCheckBox.Location = new System.Drawing.Point(187, 17);
+            this.UserIdCheckBox.Location = new System.Drawing.Point(20, 42);
             this.UserIdCheckBox.Margin = new System.Windows.Forms.Padding(2);
             this.UserIdCheckBox.Name = "UserIdCheckBox";
             this.UserIdCheckBox.Size = new System.Drawing.Size(62, 17);
@@ -88,16 +88,16 @@
             // UserIdTextBox
             // 
             this.UserIdTextBox.Enabled = false;
-            this.UserIdTextBox.Location = new System.Drawing.Point(247, 16);
+            this.UserIdTextBox.Location = new System.Drawing.Point(86, 40);
             this.UserIdTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.UserIdTextBox.Name = "UserIdTextBox";
-            this.UserIdTextBox.Size = new System.Drawing.Size(76, 20);
+            this.UserIdTextBox.Size = new System.Drawing.Size(149, 20);
             this.UserIdTextBox.TabIndex = 2;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(326, 19);
+            this.label2.Location = new System.Drawing.Point(250, 44);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(53, 13);
@@ -107,18 +107,18 @@
             // PasswordTextBox
             // 
             this.PasswordTextBox.Enabled = false;
-            this.PasswordTextBox.Location = new System.Drawing.Point(381, 16);
+            this.PasswordTextBox.Location = new System.Drawing.Point(307, 40);
             this.PasswordTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.PasswordTextBox.Name = "PasswordTextBox";
             this.PasswordTextBox.PasswordChar = '*';
-            this.PasswordTextBox.Size = new System.Drawing.Size(76, 20);
+            this.PasswordTextBox.Size = new System.Drawing.Size(150, 20);
             this.PasswordTextBox.TabIndex = 3;
             // 
             // TablesCheckedListBox
             // 
             this.TablesCheckedListBox.CheckOnClick = true;
             this.TablesCheckedListBox.FormattingEnabled = true;
-            this.TablesCheckedListBox.Location = new System.Drawing.Point(21, 109);
+            this.TablesCheckedListBox.Location = new System.Drawing.Point(20, 123);
             this.TablesCheckedListBox.Margin = new System.Windows.Forms.Padding(2);
             this.TablesCheckedListBox.Name = "TablesCheckedListBox";
             this.TablesCheckedListBox.Size = new System.Drawing.Size(523, 304);
@@ -128,7 +128,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(19, 46);
+            this.label3.Location = new System.Drawing.Point(19, 72);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(58, 13);
@@ -140,7 +140,7 @@
             this.DatabasesComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.DatabasesComboBox.Enabled = false;
             this.DatabasesComboBox.FormattingEnabled = true;
-            this.DatabasesComboBox.Location = new System.Drawing.Point(85, 44);
+            this.DatabasesComboBox.Location = new System.Drawing.Point(85, 70);
             this.DatabasesComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.DatabasesComboBox.Name = "DatabasesComboBox";
             this.DatabasesComboBox.Size = new System.Drawing.Size(372, 21);
@@ -150,7 +150,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(19, 432);
+            this.label4.Location = new System.Drawing.Point(18, 443);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(69, 13);
             this.label4.TabIndex = 7;
@@ -158,14 +158,14 @@
             // 
             // NameSpaceTextBox
             // 
-            this.NameSpaceTextBox.Location = new System.Drawing.Point(94, 428);
+            this.NameSpaceTextBox.Location = new System.Drawing.Point(93, 440);
             this.NameSpaceTextBox.Name = "NameSpaceTextBox";
-            this.NameSpaceTextBox.Size = new System.Drawing.Size(100, 20);
+            this.NameSpaceTextBox.Size = new System.Drawing.Size(364, 20);
             this.NameSpaceTextBox.TabIndex = 8;
             // 
             // GenerateButton
             // 
-            this.GenerateButton.Location = new System.Drawing.Point(228, 427);
+            this.GenerateButton.Location = new System.Drawing.Point(480, 438);
             this.GenerateButton.Name = "GenerateButton";
             this.GenerateButton.Size = new System.Drawing.Size(75, 23);
             this.GenerateButton.TabIndex = 9;
@@ -177,7 +177,7 @@
             this.CheckedAllCheckBox.AutoSize = true;
             this.CheckedAllCheckBox.Checked = true;
             this.CheckedAllCheckBox.CheckState = System.Windows.Forms.CheckState.Indeterminate;
-            this.CheckedAllCheckBox.Location = new System.Drawing.Point(22, 87);
+            this.CheckedAllCheckBox.Location = new System.Drawing.Point(21, 101);
             this.CheckedAllCheckBox.Name = "CheckedAllCheckBox";
             this.CheckedAllCheckBox.Size = new System.Drawing.Size(140, 17);
             this.CheckedAllCheckBox.TabIndex = 10;
@@ -189,7 +189,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(566, 581);
+            this.ClientSize = new System.Drawing.Size(566, 479);
             this.Controls.Add(this.CheckedAllCheckBox);
             this.Controls.Add(this.GenerateButton);
             this.Controls.Add(this.NameSpaceTextBox);
