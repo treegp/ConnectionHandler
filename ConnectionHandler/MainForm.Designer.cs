@@ -162,15 +162,18 @@
             this.NameSpaceTextBox.Name = "NameSpaceTextBox";
             this.NameSpaceTextBox.Size = new System.Drawing.Size(364, 20);
             this.NameSpaceTextBox.TabIndex = 8;
+            this.NameSpaceTextBox.TextChanged += new System.EventHandler(this.NameSpaceTextBox_TextChanged);
             // 
             // GenerateButton
             // 
+            this.GenerateButton.Enabled = false;
             this.GenerateButton.Location = new System.Drawing.Point(480, 438);
             this.GenerateButton.Name = "GenerateButton";
             this.GenerateButton.Size = new System.Drawing.Size(75, 23);
             this.GenerateButton.TabIndex = 9;
             this.GenerateButton.Text = "Generate ...";
             this.GenerateButton.UseVisualStyleBackColor = true;
+            this.GenerateButton.Click += new System.EventHandler(this.GenerateButton_Click);
             // 
             // CheckedAllCheckBox
             // 

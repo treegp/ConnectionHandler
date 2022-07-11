@@ -98,6 +98,32 @@ namespace ConnectionHandler
         private void TablesCheckedListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             CheckedAllCheckBox.CheckState = CheckState.Indeterminate;
+            if (NameSpaceTextBox.Text != "" & TablesCheckedListBox.CheckedItems.Count != 0 ? GenerateButton.Enabled = true : GenerateButton.Enabled = false) ;
+        }
+
+
+
+        private void GenerateButton_Click(object sender, EventArgs e)
+        {
+            var folderDialog = new FolderBrowserDialog();
+
+            if (folderDialog.ShowDialog() != DialogResult.OK)
+                return;
+
+            var folder = folderDialog.SelectedPath;
+
+
+
+
+
+        }
+
+        private void NameSpaceTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (NameSpaceTextBox.Text != "" & TablesCheckedListBox.CheckedItems.Count != 0 ? GenerateButton.Enabled = true : GenerateButton.Enabled = false) ;
+
+            
+
         }
     }
 }
