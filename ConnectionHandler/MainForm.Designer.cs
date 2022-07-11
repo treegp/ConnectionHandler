@@ -38,13 +38,18 @@
             this.TablesCheckedListBox = new System.Windows.Forms.CheckedListBox();
             this.label3 = new System.Windows.Forms.Label();
             this.DatabasesComboBox = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.NameSpaceTextBox = new System.Windows.Forms.TextBox();
+            this.GenerateButton = new System.Windows.Forms.Button();
+            this.CheckedAllCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // ConnectButton
             // 
-            this.ConnectButton.Location = new System.Drawing.Point(627, 19);
+            this.ConnectButton.Location = new System.Drawing.Point(469, 14);
+            this.ConnectButton.Margin = new System.Windows.Forms.Padding(2);
             this.ConnectButton.Name = "ConnectButton";
-            this.ConnectButton.Size = new System.Drawing.Size(85, 25);
+            this.ConnectButton.Size = new System.Drawing.Size(75, 23);
             this.ConnectButton.TabIndex = 4;
             this.ConnectButton.Text = "Connect";
             this.ConnectButton.UseVisualStyleBackColor = true;
@@ -53,25 +58,28 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(25, 23);
+            this.label1.Location = new System.Drawing.Point(19, 19);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(82, 16);
+            this.label1.Size = new System.Drawing.Size(67, 13);
             this.label1.TabIndex = 1;
             this.label1.Text = "Data Source";
             // 
             // DataSourceTextBox
             // 
-            this.DataSourceTextBox.Location = new System.Drawing.Point(113, 20);
+            this.DataSourceTextBox.Location = new System.Drawing.Point(85, 16);
+            this.DataSourceTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.DataSourceTextBox.Name = "DataSourceTextBox";
-            this.DataSourceTextBox.Size = new System.Drawing.Size(100, 22);
+            this.DataSourceTextBox.Size = new System.Drawing.Size(76, 20);
             this.DataSourceTextBox.TabIndex = 0;
             // 
             // UserIdCheckBox
             // 
             this.UserIdCheckBox.AutoSize = true;
-            this.UserIdCheckBox.Location = new System.Drawing.Point(249, 21);
+            this.UserIdCheckBox.Location = new System.Drawing.Point(187, 17);
+            this.UserIdCheckBox.Margin = new System.Windows.Forms.Padding(2);
             this.UserIdCheckBox.Name = "UserIdCheckBox";
-            this.UserIdCheckBox.Size = new System.Drawing.Size(74, 20);
+            this.UserIdCheckBox.Size = new System.Drawing.Size(62, 17);
             this.UserIdCheckBox.TabIndex = 1;
             this.UserIdCheckBox.Text = "User ID";
             this.UserIdCheckBox.UseVisualStyleBackColor = true;
@@ -80,43 +88,50 @@
             // UserIdTextBox
             // 
             this.UserIdTextBox.Enabled = false;
-            this.UserIdTextBox.Location = new System.Drawing.Point(329, 20);
+            this.UserIdTextBox.Location = new System.Drawing.Point(247, 16);
+            this.UserIdTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.UserIdTextBox.Name = "UserIdTextBox";
-            this.UserIdTextBox.Size = new System.Drawing.Size(100, 22);
+            this.UserIdTextBox.Size = new System.Drawing.Size(76, 20);
             this.UserIdTextBox.TabIndex = 2;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(435, 23);
+            this.label2.Location = new System.Drawing.Point(326, 19);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(67, 16);
+            this.label2.Size = new System.Drawing.Size(53, 13);
             this.label2.TabIndex = 1;
             this.label2.Text = "Password";
             // 
             // PasswordTextBox
             // 
             this.PasswordTextBox.Enabled = false;
-            this.PasswordTextBox.Location = new System.Drawing.Point(508, 20);
+            this.PasswordTextBox.Location = new System.Drawing.Point(381, 16);
+            this.PasswordTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.PasswordTextBox.Name = "PasswordTextBox";
             this.PasswordTextBox.PasswordChar = '*';
-            this.PasswordTextBox.Size = new System.Drawing.Size(100, 22);
+            this.PasswordTextBox.Size = new System.Drawing.Size(76, 20);
             this.PasswordTextBox.TabIndex = 3;
             // 
             // TablesCheckedListBox
             // 
+            this.TablesCheckedListBox.CheckOnClick = true;
             this.TablesCheckedListBox.FormattingEnabled = true;
-            this.TablesCheckedListBox.Location = new System.Drawing.Point(28, 89);
+            this.TablesCheckedListBox.Location = new System.Drawing.Point(21, 109);
+            this.TablesCheckedListBox.Margin = new System.Windows.Forms.Padding(2);
             this.TablesCheckedListBox.Name = "TablesCheckedListBox";
-            this.TablesCheckedListBox.Size = new System.Drawing.Size(684, 378);
+            this.TablesCheckedListBox.Size = new System.Drawing.Size(523, 304);
             this.TablesCheckedListBox.TabIndex = 5;
+            this.TablesCheckedListBox.SelectedIndexChanged += new System.EventHandler(this.TablesCheckedListBox_SelectedIndexChanged);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(25, 57);
+            this.label3.Location = new System.Drawing.Point(19, 46);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(74, 16);
+            this.label3.Size = new System.Drawing.Size(58, 13);
             this.label3.TabIndex = 1;
             this.label3.Text = "Databases";
             // 
@@ -125,17 +140,60 @@
             this.DatabasesComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.DatabasesComboBox.Enabled = false;
             this.DatabasesComboBox.FormattingEnabled = true;
-            this.DatabasesComboBox.Location = new System.Drawing.Point(113, 54);
+            this.DatabasesComboBox.Location = new System.Drawing.Point(85, 44);
+            this.DatabasesComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.DatabasesComboBox.Name = "DatabasesComboBox";
-            this.DatabasesComboBox.Size = new System.Drawing.Size(495, 24);
+            this.DatabasesComboBox.Size = new System.Drawing.Size(372, 21);
             this.DatabasesComboBox.TabIndex = 6;
             this.DatabasesComboBox.SelectedIndexChanged += new System.EventHandler(this.DatabasesComboBox_SelectedIndexChanged);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(19, 432);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(69, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "Name Space";
+            // 
+            // NameSpaceTextBox
+            // 
+            this.NameSpaceTextBox.Location = new System.Drawing.Point(94, 428);
+            this.NameSpaceTextBox.Name = "NameSpaceTextBox";
+            this.NameSpaceTextBox.Size = new System.Drawing.Size(100, 20);
+            this.NameSpaceTextBox.TabIndex = 8;
+            // 
+            // GenerateButton
+            // 
+            this.GenerateButton.Location = new System.Drawing.Point(228, 427);
+            this.GenerateButton.Name = "GenerateButton";
+            this.GenerateButton.Size = new System.Drawing.Size(75, 23);
+            this.GenerateButton.TabIndex = 9;
+            this.GenerateButton.Text = "Generate ...";
+            this.GenerateButton.UseVisualStyleBackColor = true;
+            // 
+            // CheckedAllCheckBox
+            // 
+            this.CheckedAllCheckBox.AutoSize = true;
+            this.CheckedAllCheckBox.Checked = true;
+            this.CheckedAllCheckBox.CheckState = System.Windows.Forms.CheckState.Indeterminate;
+            this.CheckedAllCheckBox.Location = new System.Drawing.Point(22, 87);
+            this.CheckedAllCheckBox.Name = "CheckedAllCheckBox";
+            this.CheckedAllCheckBox.Size = new System.Drawing.Size(140, 17);
+            this.CheckedAllCheckBox.TabIndex = 10;
+            this.CheckedAllCheckBox.Text = "Check All / Uncheck All";
+            this.CheckedAllCheckBox.UseVisualStyleBackColor = true;
+            this.CheckedAllCheckBox.CheckedChanged += new System.EventHandler(this.CheckedAllCheckBox_CheckedChanged);
+            // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(739, 592);
+            this.ClientSize = new System.Drawing.Size(566, 581);
+            this.Controls.Add(this.CheckedAllCheckBox);
+            this.Controls.Add(this.GenerateButton);
+            this.Controls.Add(this.NameSpaceTextBox);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.DatabasesComboBox);
             this.Controls.Add(this.TablesCheckedListBox);
             this.Controls.Add(this.PasswordTextBox);
@@ -146,6 +204,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.ConnectButton);
             this.Controls.Add(this.UserIdCheckBox);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MainForm";
             this.Text = "Connection Handler";
             this.ResumeLayout(false);
@@ -165,6 +224,10 @@
         private System.Windows.Forms.CheckedListBox TablesCheckedListBox;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox DatabasesComboBox;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox NameSpaceTextBox;
+        private System.Windows.Forms.Button GenerateButton;
+        private System.Windows.Forms.CheckBox CheckedAllCheckBox;
     }
 }
 

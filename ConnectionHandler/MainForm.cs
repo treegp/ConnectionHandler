@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ConnectionHandler
@@ -88,6 +81,23 @@ namespace ConnectionHandler
 
 
 
+        }
+
+        private void CheckedAllCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (CheckedAllCheckBox.CheckState == CheckState.Indeterminate)
+                return;
+            int i = TablesCheckedListBox.Items.Count;
+            for (int index = 0; index < i; index++)
+            {
+                TablesCheckedListBox.SetItemChecked(index, CheckedAllCheckBox.Checked);
+            }
+         
+        }
+
+        private void TablesCheckedListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CheckedAllCheckBox.CheckState = CheckState.Indeterminate;
         }
     }
 }
