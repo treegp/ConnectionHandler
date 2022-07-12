@@ -178,8 +178,6 @@
             // CheckedAllCheckBox
             // 
             this.CheckedAllCheckBox.AutoSize = true;
-            this.CheckedAllCheckBox.Checked = true;
-            this.CheckedAllCheckBox.CheckState = System.Windows.Forms.CheckState.Indeterminate;
             this.CheckedAllCheckBox.Location = new System.Drawing.Point(21, 101);
             this.CheckedAllCheckBox.Name = "CheckedAllCheckBox";
             this.CheckedAllCheckBox.Size = new System.Drawing.Size(140, 17);
