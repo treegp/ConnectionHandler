@@ -169,7 +169,7 @@ namespace ConnectionHandler
                 file.Add("}");
 
 
-                File.WriteAllLines(savePath + "/" + table[0].TableName + ".cs"  , file.ToArray());
+                File.WriteAllLines(savePath + "/EntityModels/" + table[0].TableName + ".cs"  , file.ToArray());
             }
 
 
@@ -258,8 +258,12 @@ namespace ConnectionHandler
             return type;
         }
 
+        
 
     }
+
+    
+
 
     public class ColumnItems
     {
