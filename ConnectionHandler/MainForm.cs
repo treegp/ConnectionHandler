@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
 using System.Windows.Forms;
 
 namespace ConnectionHandler
@@ -134,12 +135,42 @@ namespace ConnectionHandler
             }
 
             GenerateClassFiles(tablesColumnsItems, folder, NameSpaceTextBox.Text);
+            MessageBox.Show("All done!");
 
         }
 
-        private void GenerateClassFiles(List<List<ColumnItems>> tci , string savePath, string nameSpace)
+        private void GenerateClassFiles(List<List<ColumnItems>> tci, string savePath, string nameSpace)
         {
+            foreach (List<ColumnItems> table in tci)
+            {
+                List<string> file = new List<string>();
 
+                file.Add("using System;");
+                file.Add("namespace " + nameSpace);
+                file.Add("{");
+                file.Add("    [Table(\"" + table[0].TableSchema + "\")]");
+                file.Add("    public class " + table[0].TableName);
+                file.Add("    {");
+
+                foreach (var column in table)
+                {
+                    string conditions;
+
+                    if (column.IsNullable) conditions = "false,"; else conditions = "true,";
+                    if (column.IsComputed) conditions += "true,"; else conditions += "false,";
+                    if (column.IsPrimaryKey) conditions += "true"; else conditions += "false";
+
+                    file.Add("        [Column(" + conditions + ")]");
+                    file.Add("        public "+ConvertSQLDataTypes(column.Type,column.IsNullable)+" "+column.Name+" { get; set; }");
+                    file.Add("");
+
+                }
+                file.Add("    }");
+                file.Add("}");
+
+
+                File.WriteAllLines(savePath + "/" + table[0].TableName + ".cs"  , file.ToArray());
+            }
 
 
         }
@@ -185,7 +216,7 @@ namespace ConnectionHandler
                 {
                     var columnItems = new ColumnItems
                     {
-                        TableName= tablename,
+                        TableName = tablename,
                         TableSchema = tableschema,
                         Name = readerName["COLUMN_NAME"].ToString(),
                         Type = readerName["DATA_TYPE"].ToString(),
@@ -193,10 +224,7 @@ namespace ConnectionHandler
                         IsPrimaryKey = primaryKeys.Contains(readerName["COLUMN_NAME"].ToString()),
                         IsComputed = computedColumns.Contains(readerName["COLUMN_NAME"].ToString())
                     };
-
                     columnsItems.Add(columnItems);
-
-                    var oo = ConvertSQLDataTypes(columnItems.Type, columnItems.IsNullable);
                 }
 
                 return columnsItems;
