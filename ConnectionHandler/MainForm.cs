@@ -81,8 +81,6 @@ namespace ConnectionHandler
 
             }
 
-
-
         }
 
         private void CheckedAllCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -100,12 +98,19 @@ namespace ConnectionHandler
         private void TablesCheckedListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             CheckedAllCheckBox.CheckState = CheckState.Indeterminate;
-            if (NameSpaceTextBox.Text != "" & TablesCheckedListBox.CheckedItems.Count != 0 ? GenerateButton.Enabled = true : GenerateButton.Enabled = false) ;
+
+            if (NameSpaceTextBox.Text != "" & TablesCheckedListBox.CheckedItems.Count != 0)
+                GenerateButton.Enabled = true;
+            else
+                GenerateButton.Enabled = false;
         }
 
         private void NameSpaceTextBox_TextChanged(object sender, EventArgs e)
         {
-            if (NameSpaceTextBox.Text != "" & TablesCheckedListBox.CheckedItems.Count != 0 ? GenerateButton.Enabled = true : GenerateButton.Enabled = false) ;
+            if (NameSpaceTextBox.Text != "" & TablesCheckedListBox.CheckedItems.Count != 0)
+                GenerateButton.Enabled = true;
+            else
+                GenerateButton.Enabled = false;
         }
 
 
@@ -115,6 +120,7 @@ namespace ConnectionHandler
 
         private void GenerateButton_Click(object sender, EventArgs e)
         {
+            var tablesColumnsItems = new List<List<ColumnItems>>();
             var folderDialog = new FolderBrowserDialog();
 
             if (folderDialog.ShowDialog() != DialogResult.OK)
@@ -124,10 +130,21 @@ namespace ConnectionHandler
 
             foreach (var item in TablesCheckedListBox.CheckedItems)
             {
-                var c = GetColumnItems(item.ToString().Split('.')[0], item.ToString().Split('.')[1]);
+                tablesColumnsItems.Add(GetColumnItems(item.ToString().Split('.')[0], item.ToString().Split('.')[1]));
             }
 
+            GenerateClassFiles(tablesColumnsItems, folder, NameSpaceTextBox.Text);
+
         }
+
+        private void GenerateClassFiles(List<List<ColumnItems>> tci , string savePath, string nameSpace)
+        {
+
+
+
+        }
+
+
 
         private List<ColumnItems> GetColumnItems(string tableschema, string tablename)
         {
@@ -151,13 +168,12 @@ namespace ConnectionHandler
 
                 var comComputed = new SqlCommand();
                 comComputed.Connection = con;
-                comComputed.CommandText = "select name,is_identity,is_computed from sys.all_columns where object_id=object_id(N'" + tableschema + "." + tablename + "')";
+                comComputed.CommandText = "select [name] from sys.all_columns where  (is_identity=1 or is_computed=1) and [object_id]=object_id(N'" + tableschema + "." + tablename + "')";
                 var readerComputed = comComputed.ExecuteReader();
 
                 while (readerComputed.Read())
                 {
-                    if (readerComputed["is_identity"].ToString() == "1" | readerComputed["is_computed"].ToString() == "1")
-                        computedColumns.Add(readerComputed["name"].ToString());
+                    computedColumns.Add(readerComputed["name"].ToString());
                 }
 
                 var comName = new SqlCommand();
@@ -169,6 +185,8 @@ namespace ConnectionHandler
                 {
                     var columnItems = new ColumnItems
                     {
+                        TableName= tablename,
+                        TableSchema = tableschema,
                         Name = readerName["COLUMN_NAME"].ToString(),
                         Type = readerName["DATA_TYPE"].ToString(),
                         IsNullable = readerName["IS_NULLABLE"].ToString() == "YES",
@@ -217,6 +235,8 @@ namespace ConnectionHandler
 
     public class ColumnItems
     {
+        public string TableName { get; set; }
+        public string TableSchema { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
         public bool IsPrimaryKey { get; set; }

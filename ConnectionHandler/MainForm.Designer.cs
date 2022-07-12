@@ -50,7 +50,7 @@
             this.ConnectButton.Margin = new System.Windows.Forms.Padding(2);
             this.ConnectButton.Name = "ConnectButton";
             this.ConnectButton.Size = new System.Drawing.Size(75, 23);
-            this.ConnectButton.TabIndex = 4;
+            this.ConnectButton.TabIndex = 1;
             this.ConnectButton.Text = "Connect";
             this.ConnectButton.UseVisualStyleBackColor = true;
             this.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
@@ -80,7 +80,7 @@
             this.UserIdCheckBox.Margin = new System.Windows.Forms.Padding(2);
             this.UserIdCheckBox.Name = "UserIdCheckBox";
             this.UserIdCheckBox.Size = new System.Drawing.Size(62, 17);
-            this.UserIdCheckBox.TabIndex = 1;
+            this.UserIdCheckBox.TabIndex = 2;
             this.UserIdCheckBox.Text = "User ID";
             this.UserIdCheckBox.UseVisualStyleBackColor = true;
             this.UserIdCheckBox.CheckedChanged += new System.EventHandler(this.UserIdCheckBox_CheckedChanged);
@@ -92,7 +92,7 @@
             this.UserIdTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.UserIdTextBox.Name = "UserIdTextBox";
             this.UserIdTextBox.Size = new System.Drawing.Size(149, 20);
-            this.UserIdTextBox.TabIndex = 2;
+            this.UserIdTextBox.TabIndex = 3;
             // 
             // label2
             // 
@@ -112,7 +112,7 @@
             this.PasswordTextBox.Name = "PasswordTextBox";
             this.PasswordTextBox.PasswordChar = '*';
             this.PasswordTextBox.Size = new System.Drawing.Size(150, 20);
-            this.PasswordTextBox.TabIndex = 3;
+            this.PasswordTextBox.TabIndex = 4;
             // 
             // TablesCheckedListBox
             // 
@@ -122,7 +122,7 @@
             this.TablesCheckedListBox.Margin = new System.Windows.Forms.Padding(2);
             this.TablesCheckedListBox.Name = "TablesCheckedListBox";
             this.TablesCheckedListBox.Size = new System.Drawing.Size(523, 304);
-            this.TablesCheckedListBox.TabIndex = 5;
+            this.TablesCheckedListBox.TabIndex = 7;
             this.TablesCheckedListBox.SelectedIndexChanged += new System.EventHandler(this.TablesCheckedListBox_SelectedIndexChanged);
             // 
             // label3
@@ -144,7 +144,7 @@
             this.DatabasesComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.DatabasesComboBox.Name = "DatabasesComboBox";
             this.DatabasesComboBox.Size = new System.Drawing.Size(372, 21);
-            this.DatabasesComboBox.TabIndex = 6;
+            this.DatabasesComboBox.TabIndex = 5;
             this.DatabasesComboBox.SelectedIndexChanged += new System.EventHandler(this.DatabasesComboBox_SelectedIndexChanged);
             // 
             // label4
@@ -181,7 +181,7 @@
             this.CheckedAllCheckBox.Location = new System.Drawing.Point(21, 101);
             this.CheckedAllCheckBox.Name = "CheckedAllCheckBox";
             this.CheckedAllCheckBox.Size = new System.Drawing.Size(140, 17);
-            this.CheckedAllCheckBox.TabIndex = 10;
+            this.CheckedAllCheckBox.TabIndex = 6;
             this.CheckedAllCheckBox.Text = "Check All / Uncheck All";
             this.CheckedAllCheckBox.UseVisualStyleBackColor = true;
             this.CheckedAllCheckBox.CheckedChanged += new System.EventHandler(this.CheckedAllCheckBox_CheckedChanged);
