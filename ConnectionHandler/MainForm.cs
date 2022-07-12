@@ -253,7 +253,7 @@ namespace ConnectionHandler
             else
                 type = "object";
 
-            if (isNullable)
+            if (isNullable & type!="string")
                 type = "Nullable<" + type + ">";
 
             return type;
