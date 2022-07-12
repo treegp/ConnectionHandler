@@ -168,14 +168,15 @@ namespace ConnectionHandler
                 file.Add("    }");
                 file.Add("}");
 
+                var entityModelPath = savePath + "\\ConnectionHandler\\EntityModels";
+                if (!Directory.Exists(entityModelPath))
+                    Directory.CreateDirectory(entityModelPath);
 
-                File.WriteAllLines(savePath + "/EntityModels/" + table[0].TableName + ".cs"  , file.ToArray());
+                File.WriteAllLines(savePath + "\\ConnectionHandler\\EntityModels\\" + table[0].TableName + ".cs"  , file.ToArray());
             }
 
 
         }
-
-
 
         private List<ColumnItems> GetColumnItems(string tableschema, string tablename)
         {
@@ -257,13 +258,7 @@ namespace ConnectionHandler
 
             return type;
         }
-
-        
-
     }
-
-    
-
 
     public class ColumnItems
     {
