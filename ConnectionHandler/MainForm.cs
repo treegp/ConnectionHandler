@@ -43,6 +43,7 @@ namespace ConnectionHandler
 
         private void ConnectButton_Click(object sender, EventArgs e)
         {
+
             DatabasesComboBox.Enabled = false;
             DatabasesComboBox.Items.Clear();
 
@@ -134,7 +135,9 @@ namespace ConnectionHandler
                 tablesColumnsItems.Add(GetColumnItems(item.ToString().Split('.')[0], item.ToString().Split('.')[1]));
             }
 
+
             GenerateClassFiles(tablesColumnsItems, folder, NameSpaceTextBox.Text);
+            ExportGenericRepo(folder);
             MessageBox.Show("All done!");
 
         }
@@ -161,7 +164,7 @@ namespace ConnectionHandler
                     if (column.IsPrimaryKey) conditions += "true"; else conditions += "false";
 
                     file.Add("        [Column(" + conditions + ")]");
-                    file.Add("        public "+ConvertSQLDataTypes(column.Type,column.IsNullable)+" "+column.Name+" { get; set; }");
+                    file.Add("        public " + ConvertSQLDataTypes(column.Type, column.IsNullable) + " " + column.Name + " { get; set; }");
                     file.Add("");
 
                 }
@@ -172,7 +175,7 @@ namespace ConnectionHandler
                 if (!Directory.Exists(entityModelPath))
                     Directory.CreateDirectory(entityModelPath);
 
-                File.WriteAllLines(savePath + "\\ConnectionHandler\\EntityModels\\" + table[0].TableName + ".cs"  , file.ToArray());
+                File.WriteAllLines(savePath + "\\ConnectionHandler\\EntityModels\\" + table[0].TableName + ".cs", file.ToArray());
             }
 
 
@@ -233,10 +236,6 @@ namespace ConnectionHandler
 
 
 
-
-
-
-
         }
 
         private string ConvertSQLDataTypes(string datatype, bool isNullable)
@@ -253,10 +252,34 @@ namespace ConnectionHandler
             else
                 type = "object";
 
-            if (isNullable & type!="string")
+            if (isNullable & type != "string")
                 type = "Nullable<" + type + ">";
 
             return type;
+        }
+
+
+
+
+
+        private void ExportGenericRepo(string path)
+        {
+            var savePath = path + "\\ConnectionHandler";
+            if (!Directory.Exists(savePath))
+                Directory.CreateDirectory(savePath);
+
+            var projectFolder = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+
+            File.Copy(projectFolder + "\\GenericRepository.cs", savePath + "\\GenericRepository.cs", true);
+
+            var lines = File.ReadAllLines(savePath + "\\GenericRepository.cs");
+            List<string> repo = new List<string>();
+            foreach (var line in lines)
+            {
+                repo.Add(line.Replace("ConnectToDB", NameSpaceTextBox.Text)); 
+            }
+            File.WriteAllLines(savePath + "\\GenericRepository.cs",repo);
+
         }
     }
 
@@ -270,4 +293,8 @@ namespace ConnectionHandler
         public bool IsComputed { get; set; }
         public bool IsNullable { get; set; }
     }
+
+
+
+
 }
