@@ -39,8 +39,6 @@ namespace ConnectionHandler
 
         }
 
-
-
         private void ConnectButton_Click(object sender, EventArgs e)
         {
 
@@ -115,11 +113,6 @@ namespace ConnectionHandler
                 GenerateButton.Enabled = false;
         }
 
-
-
-
-
-
         private void GenerateButton_Click(object sender, EventArgs e)
         {
             var tablesColumnsItems = new List<List<ColumnItems>>();
@@ -136,13 +129,33 @@ namespace ConnectionHandler
             }
 
 
-            GenerateClassFiles(tablesColumnsItems, folder, NameSpaceTextBox.Text);
             ExportGenericRepo(folder);
+            GenerateEntityModelsClassFiles(tablesColumnsItems, folder, NameSpaceTextBox.Text);
+            GenerateEntityMethodsClassFiles(tablesColumnsItems, folder, NameSpaceTextBox.Text);
             MessageBox.Show("All done!");
+        }
+
+        private void ExportGenericRepo(string path)
+        {
+            var savePath = path + "\\ConnectionHandler";
+            if (!Directory.Exists(savePath))
+                Directory.CreateDirectory(savePath);
+
+            var projectFolder = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+
+            File.Copy(projectFolder + "\\GenericRepository.cs", savePath + "\\GenericRepository.cs", true);
+
+            var lines = File.ReadAllLines(savePath + "\\GenericRepository.cs");
+            List<string> repo = new List<string>();
+            foreach (var line in lines)
+            {
+                repo.Add(line.Replace("ConnectToDB", NameSpaceTextBox.Text));
+            }
+            File.WriteAllLines(savePath + "\\GenericRepository.cs", repo);
 
         }
 
-        private void GenerateClassFiles(List<List<ColumnItems>> tci, string savePath, string nameSpace)
+        private void GenerateEntityModelsClassFiles(List<List<ColumnItems>> tci, string savePath, string nameSpace)
         {
             foreach (List<ColumnItems> table in tci)
             {
@@ -177,8 +190,43 @@ namespace ConnectionHandler
 
                 File.WriteAllLines(savePath + "\\ConnectionHandler\\EntityModels\\" + table[0].TableName + ".cs", file.ToArray());
             }
+        }
 
+        private void GenerateEntityMethodsClassFiles(List<List<ColumnItems>> tci, string savePath, string nameSpace)
+        {
+            foreach (List<ColumnItems> table in tci)
+            {
+                List<string> file = new List<string>();
 
+                file.Add("using System;");
+                file.Add("using System.Collections.Generic;");
+                file.Add("using System.Data.SqlClient;");
+                file.Add("namespace " + nameSpace);
+                file.Add("{");
+                file.Add("    public class " + table[0].TableName + "Repository : GenericRepository<" + table[0].TableName + ">");
+                file.Add("    {");
+                file.Add("        string conStr;");
+                file.Add("        public " + table[0].TableName + "Repository(string connection) : base(connection) { conStr = connection; }");
+
+                foreach (var column in table)
+                {
+                    file.Add("");
+                    file.Add("        public List<" + column.TableName + "> GetBy" + column.Name + "(" + ConvertSQLDataTypes(column.Type, column.IsNullable) + " value)");
+                    file.Add("        {");
+                    file.Add("            SqlParameter param = new SqlParameter(\"param1\", value);");
+                    file.Add("            string command = \"select * from " + column.TableName + " where [" + column.Name + "] = @param1\";");
+                    file.Add("            return ExecutingReader(command, param);");
+                    file.Add("        }");
+                }
+                file.Add("    }");
+                file.Add("}");
+
+                var entityModelPath = savePath + "\\ConnectionHandler\\EntityMethods";
+                if (!Directory.Exists(entityModelPath))
+                    Directory.CreateDirectory(entityModelPath);
+
+                File.WriteAllLines(savePath + "\\ConnectionHandler\\EntityMethods\\" + table[0].TableName + ".cs", file.ToArray());
+            }
         }
 
         private List<ColumnItems> GetColumnItems(string tableschema, string tablename)
@@ -230,12 +278,8 @@ namespace ConnectionHandler
                     };
                     columnsItems.Add(columnItems);
                 }
-
                 return columnsItems;
             }
-
-
-
         }
 
         private string ConvertSQLDataTypes(string datatype, bool isNullable)
@@ -259,28 +303,6 @@ namespace ConnectionHandler
         }
 
 
-
-
-
-        private void ExportGenericRepo(string path)
-        {
-            var savePath = path + "\\ConnectionHandler";
-            if (!Directory.Exists(savePath))
-                Directory.CreateDirectory(savePath);
-
-            var projectFolder = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-
-            File.Copy(projectFolder + "\\GenericRepository.cs", savePath + "\\GenericRepository.cs", true);
-
-            var lines = File.ReadAllLines(savePath + "\\GenericRepository.cs");
-            List<string> repo = new List<string>();
-            foreach (var line in lines)
-            {
-                repo.Add(line.Replace("ConnectToDB", NameSpaceTextBox.Text)); 
-            }
-            File.WriteAllLines(savePath + "\\GenericRepository.cs",repo);
-
-        }
     }
 
     public class ColumnItems

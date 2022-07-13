@@ -13,6 +13,8 @@ namespace ConnectToDB
         string tblName = typeof(TEntity).Name;
         List<ColumnSpecifics> ColumnsSpecifics = new List<ColumnSpecifics>();
 
+
+
         public GenericRepository(string connection)
         {
             conStr = connection;
@@ -153,10 +155,10 @@ namespace ConnectToDB
 
 
             string updatePart = "UPDATE [" + tblSchema + "].[" + tblName + "]";
-            string setPart = "SET " + string.Join(",", setList) ;
-            string wherePart = "WHERE " + string.Join(",", conditionList) ;
+            string setPart = "SET " + string.Join(",", setList);
+            string wherePart = "WHERE " + string.Join(",", conditionList);
 
-            string command = string.Join(" ", updatePart,setPart, wherePart);
+            string command = string.Join(" ", updatePart, setPart, wherePart);
 
 
             using (SqlConnection con = new SqlConnection(conStr))
@@ -174,29 +176,9 @@ namespace ConnectToDB
         }
 
 
-        List<TEntity> SelectByPrimaryKeys(string selectPart, bool hasWhere, params int[] keys)
+
+        public List<TEntity> ExecutingReader(string command, params SqlParameter[] parametersList)
         {
-            List<SqlParameter> parametersList = new List<SqlParameter>();
-            List<string> conditionList = new List<string>();
-
-            int i = 0;
-            foreach (var spec in ColumnsSpecifics)
-            {
-                if (!spec.PrimaryKey)
-                    continue;
-
-                conditionList.Add("[" + spec.ColumnName + "] = @param" + i);
-                parametersList.Add(new SqlParameter("param" + i, keys[i]));
-                i++;
-            }
-
-            string wherePart = "";
-            if (hasWhere)
-                wherePart = "WHERE (" + string.Join(",", conditionList) + ")";
-
-
-
-            string command = string.Join(" ", selectPart, wherePart);
 
             using (SqlConnection con = new SqlConnection(conStr))
             {
@@ -212,32 +194,77 @@ namespace ConnectToDB
                     TEntity entity = Activator.CreateInstance<TEntity>();
                     foreach (var spec in ColumnsSpecifics)
                     {
-                        spec.ColumnType.SetValue(entity, reader[reader.GetOrdinal(spec.ColumnName)]);
+                        spec.ColumnType.SetValue(entity, reader[spec.ColumnName]);
                     }
                     entities.Add(entity);
                 }
                 return entities;
+
             }
+
+
         }
 
-        //SELECT * FROM [dbo].[****] WHERE [Id]=1 , ....
 
-        public TEntity Find(params int[] keys)
-        {
-            string selectPart = "SELECT TOP(1) * FROM [" + tblSchema + "].[" + tblName + "]";
-            return SelectByPrimaryKeys(selectPart, true, keys).FirstOrDefault();
-        }
+        /*
+                List<TEntity> SelectByPrimaryKeys(string selectPart, bool hasWhere, params int[] keys)
+                {
+                    List<SqlParameter> parametersList = new List<SqlParameter>();
+                    List<string> conditionList = new List<string>();
+
+                    int i = 0;
+                    foreach (var spec in ColumnsSpecifics)
+                    {
+                        if (!spec.PrimaryKey)
+                            continue;
+
+                        conditionList.Add("[" + spec.ColumnName + "] = @param" + i);
+                        parametersList.Add(new SqlParameter("param" + i, keys[i]));
+                        i++;
+                    }
+
+                    string wherePart = "";
+                    if (hasWhere)
+                        wherePart = "WHERE (" + string.Join(",", conditionList) + ")";
+
+
+
+                    string command = string.Join(" ", selectPart, wherePart);
+
+                    using (SqlConnection con = new SqlConnection(conStr))
+                    {
+                        con.Open();
+                        SqlCommand com = new SqlCommand(command, con);
+                        foreach (SqlParameter p in parametersList)
+                            com.Parameters.Add(p);
+                        SqlDataReader reader = com.ExecuteReader();
+
+                        List<TEntity> entities = new List<TEntity>();
+                        while (reader.Read())
+                        {
+                            TEntity entity = Activator.CreateInstance<TEntity>();
+                            foreach (var spec in ColumnsSpecifics)
+                            {
+                                spec.ColumnType.SetValue(entity, reader[reader.GetOrdinal(spec.ColumnName)]);
+                            }
+                            entities.Add(entity);
+                        }
+                        return entities;
+                    }
+                }
+        */
+
 
         public List<TEntity> GetAll()
         {
             string selectPart = "SELECT * FROM [" + tblSchema + "].[" + tblName + "]";
-            return SelectByPrimaryKeys(selectPart, false, 0);
+            return ExecutingReader(selectPart, null);
         }
 
         public List<TEntity> Top()
         {
             string selectPart = "SELECT TOP(1) * FROM [" + tblSchema + "].[" + tblName + "]";
-            return SelectByPrimaryKeys(selectPart, false, 0);
+            return ExecutingReader(selectPart, null);
         }
 
         public int Count()
@@ -247,13 +274,15 @@ namespace ConnectToDB
             {
                 con.Open();
                 SqlCommand com = new SqlCommand(command, con);
-                return (int) com.ExecuteScalar();
+                return (int)com.ExecuteScalar();
             }
         }
 
-
-
     }
+
+
+
+
 
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class Table : Attribute
@@ -269,6 +298,10 @@ namespace ConnectToDB
         }
     }
 
+
+
+
+
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class Column : Attribute
     {
@@ -283,6 +316,10 @@ namespace ConnectToDB
             Required = required;
         }
     }
+
+
+
+
 
     public class ColumnSpecifics
 
