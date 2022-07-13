@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 
-namespace ConnectToDB
+namespace ShopApp
 {
     public class GenericRepository<TEntity>
     {
@@ -194,7 +194,10 @@ namespace ConnectToDB
                     TEntity entity = Activator.CreateInstance<TEntity>();
                     foreach (var spec in ColumnsSpecifics)
                     {
-                        spec.ColumnType.SetValue(entity, reader[spec.ColumnName]);
+                        if (reader[spec.ColumnName] == DBNull.Value)
+                                spec.ColumnType.SetValue(entity, null);
+                        else
+                            spec.ColumnType.SetValue(entity, reader[spec.ColumnName]);
                     }
                     entities.Add(entity);
                 }
@@ -204,55 +207,6 @@ namespace ConnectToDB
 
 
         }
-
-
-        /*
-                List<TEntity> SelectByPrimaryKeys(string selectPart, bool hasWhere, params int[] keys)
-                {
-                    List<SqlParameter> parametersList = new List<SqlParameter>();
-                    List<string> conditionList = new List<string>();
-
-                    int i = 0;
-                    foreach (var spec in ColumnsSpecifics)
-                    {
-                        if (!spec.PrimaryKey)
-                            continue;
-
-                        conditionList.Add("[" + spec.ColumnName + "] = @param" + i);
-                        parametersList.Add(new SqlParameter("param" + i, keys[i]));
-                        i++;
-                    }
-
-                    string wherePart = "";
-                    if (hasWhere)
-                        wherePart = "WHERE (" + string.Join(",", conditionList) + ")";
-
-
-
-                    string command = string.Join(" ", selectPart, wherePart);
-
-                    using (SqlConnection con = new SqlConnection(conStr))
-                    {
-                        con.Open();
-                        SqlCommand com = new SqlCommand(command, con);
-                        foreach (SqlParameter p in parametersList)
-                            com.Parameters.Add(p);
-                        SqlDataReader reader = com.ExecuteReader();
-
-                        List<TEntity> entities = new List<TEntity>();
-                        while (reader.Read())
-                        {
-                            TEntity entity = Activator.CreateInstance<TEntity>();
-                            foreach (var spec in ColumnsSpecifics)
-                            {
-                                spec.ColumnType.SetValue(entity, reader[reader.GetOrdinal(spec.ColumnName)]);
-                            }
-                            entities.Add(entity);
-                        }
-                        return entities;
-                    }
-                }
-        */
 
 
         public List<TEntity> GetAll()

@@ -115,6 +115,7 @@ namespace ConnectionHandler
 
         private void GenerateButton_Click(object sender, EventArgs e)
         {
+
             var tablesColumnsItems = new List<List<ColumnItems>>();
             var folderDialog = new FolderBrowserDialog();
 
@@ -302,7 +303,7 @@ namespace ConnectionHandler
             return type;
         }
 
-
+        
     }
 
     public class ColumnItems
