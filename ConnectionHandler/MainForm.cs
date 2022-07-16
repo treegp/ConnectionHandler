@@ -130,13 +130,16 @@ namespace ConnectionHandler
             }
 
 
-            ExportGenericRepo(folder);
+            GenerateGenericRepoClassFile(folder);
+
             GenerateEntityModelsClassFiles(tablesColumnsItems, folder, NameSpaceTextBox.Text);
+            
             GenerateEntityMethodsClassFiles(tablesColumnsItems, folder, NameSpaceTextBox.Text);
             MessageBox.Show("All done!");
         }
 
-        private void ExportGenericRepo(string path)
+
+        private void GenerateGenericRepoClassFile(string path)
         {
             var savePath = path + "\\ConnectionHandler";
             if (!Directory.Exists(savePath))
@@ -150,9 +153,18 @@ namespace ConnectionHandler
             List<string> repo = new List<string>();
             foreach (var line in lines)
             {
-                repo.Add(line.Replace("ConnectToDB", NameSpaceTextBox.Text));
+                repo.Add(line.Replace("ConnectionHandler", NameSpaceTextBox.Text));
             }
             File.WriteAllLines(savePath + "\\GenericRepository.cs", repo);
+
+        }
+
+        private void GenerateGenericRepoInterfaceFile(string path)
+        {
+            var savePath = path + @"\ConnectionHandler";
+            if (!Directory.Exists(savePath))
+                Directory.CreateDirectory(savePath);
+            List<string> repo = new List<string>();
 
         }
 
@@ -228,6 +240,11 @@ namespace ConnectionHandler
 
                 File.WriteAllLines(savePath + "\\ConnectionHandler\\EntityMethods\\" + table[0].TableName + ".cs", file.ToArray());
             }
+        }
+
+        private void GenerateEntityModelsInterfaceFiles(List<List<ColumnItems>> tci,string savePath,string nameSpace)
+        {
+
         }
 
         private List<ColumnItems> GetColumnItems(string tableschema, string tablename)

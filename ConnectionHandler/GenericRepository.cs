@@ -4,9 +4,21 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 
-namespace ShopApp
+namespace ConnectionHandler
 {
-    public class GenericRepository<TEntity>
+    public interface IRepository<TEntity>
+
+    {
+        int Insert(TEntity entity);
+        int Delete(TEntity entity);
+        int Update(TEntity entity);
+        List<TEntity> GetAll();
+        TEntity Top();
+        int Count();
+    }
+
+
+    public class GenericRepository<TEntity> : IRepository<TEntity>
     {
         string conStr;
         string tblSchema;
@@ -195,7 +207,7 @@ namespace ShopApp
                     foreach (var spec in ColumnsSpecifics)
                     {
                         if (reader[spec.ColumnName] == DBNull.Value)
-                                spec.ColumnType.SetValue(entity, null);
+                            spec.ColumnType.SetValue(entity, null);
                         else
                             spec.ColumnType.SetValue(entity, reader[spec.ColumnName]);
                     }
@@ -215,10 +227,10 @@ namespace ShopApp
             return ExecutingReader(selectPart, null);
         }
 
-        public List<TEntity> Top()
+        public TEntity Top()
         {
             string selectPart = "SELECT TOP(1) * FROM [" + tblSchema + "].[" + tblName + "]";
-            return ExecutingReader(selectPart, null);
+            return ExecutingReader(selectPart, null).FirstOrDefault();
         }
 
         public int Count()
