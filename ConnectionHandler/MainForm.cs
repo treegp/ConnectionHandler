@@ -76,7 +76,8 @@ namespace ConnectionHandler
 
                 while (reader.Read())
                 {
-                    TablesCheckedListBox.Items.Add(reader["table_schema"] + "." + reader["table_name"]);
+                    if (reader["table_name"].ToString() != "sysdiagrams")
+                        TablesCheckedListBox.Items.Add(reader["table_schema"].ToString() + "." + reader["table_name"].ToString());
                 }
 
             }
@@ -130,16 +131,15 @@ namespace ConnectionHandler
             }
 
 
-            GenerateGenericRepoClassFile(folder);
-
+            GenerateGenericRepoFile(folder);
             GenerateEntityModelsClassFiles(tablesColumnsItems, folder, NameSpaceTextBox.Text);
-            
+            GenerateEntityModelsInterfaceFiles(tablesColumnsItems, folder, NameSpaceTextBox.Text);
             GenerateEntityMethodsClassFiles(tablesColumnsItems, folder, NameSpaceTextBox.Text);
             MessageBox.Show("All done!");
         }
 
 
-        private void GenerateGenericRepoClassFile(string path)
+        private void GenerateGenericRepoFile(string path)
         {
             var savePath = path + "\\ConnectionHandler";
             if (!Directory.Exists(savePath))
@@ -156,15 +156,6 @@ namespace ConnectionHandler
                 repo.Add(line.Replace("ConnectionHandler", NameSpaceTextBox.Text));
             }
             File.WriteAllLines(savePath + "\\GenericRepository.cs", repo);
-
-        }
-
-        private void GenerateGenericRepoInterfaceFile(string path)
-        {
-            var savePath = path + @"\ConnectionHandler";
-            if (!Directory.Exists(savePath))
-                Directory.CreateDirectory(savePath);
-            List<string> repo = new List<string>();
 
         }
 
@@ -205,6 +196,43 @@ namespace ConnectionHandler
             }
         }
 
+        private void GenerateEntityModelsInterfaceFiles(List<List<ColumnItems>> tci, string savePath, string nameSpace)
+        {
+            foreach (List<ColumnItems> table in tci)
+            {
+                List<string> file = new List<string>();
+
+                file.Add("using System;");
+                file.Add("using System.Collections.Generic;");
+                file.Add("");
+                file.Add("namespace " + nameSpace);
+                file.Add("{");
+                //    public interface IProductsRepository : IRepository<Products>
+                file.Add("    public interface I" + table[0].TableName + "Repository : IRepository<" + table[0].TableName + ">");
+                file.Add("    {");
+
+                foreach (var column in table)
+                {
+                    string conditions;
+
+                    if (column.IsNullable) conditions = "false,"; else conditions = "true,";
+                    if (column.IsComputed) conditions += "true,"; else conditions += "false,";
+                    if (column.IsPrimaryKey) conditions += "true"; else conditions += "false";
+                    file.Add("        List<" + column.TableName + "> GetBy" + column.Name + "(" + ConvertSQLDataTypes(column.Type, column.IsNullable) + " value);");
+                    file.Add("");
+
+                }
+                file.Add("    }");
+                file.Add("}");
+
+                var entityModelPath = savePath + "\\ConnectionHandler\\EntityAbstracts";
+                if (!Directory.Exists(entityModelPath))
+                    Directory.CreateDirectory(entityModelPath);
+
+                File.WriteAllLines(savePath + "\\ConnectionHandler\\EntityAbstracts\\" + table[0].TableName + ".cs", file.ToArray());
+            }
+        }
+
         private void GenerateEntityMethodsClassFiles(List<List<ColumnItems>> tci, string savePath, string nameSpace)
         {
             foreach (List<ColumnItems> table in tci)
@@ -216,7 +244,7 @@ namespace ConnectionHandler
                 file.Add("using System.Data.SqlClient;");
                 file.Add("namespace " + nameSpace);
                 file.Add("{");
-                file.Add("    public class " + table[0].TableName + "Repository : GenericRepository<" + table[0].TableName + ">");
+                file.Add("    public class " + table[0].TableName + "Repository : GenericRepository<" + table[0].TableName + "> , I"+ table[0].TableName + "Repository");
                 file.Add("    {");
                 file.Add("        string conStr;");
                 file.Add("        public " + table[0].TableName + "Repository(string connection) : base(connection) { conStr = connection; }");
@@ -240,11 +268,6 @@ namespace ConnectionHandler
 
                 File.WriteAllLines(savePath + "\\ConnectionHandler\\EntityMethods\\" + table[0].TableName + ".cs", file.ToArray());
             }
-        }
-
-        private void GenerateEntityModelsInterfaceFiles(List<List<ColumnItems>> tci,string savePath,string nameSpace)
-        {
-
         }
 
         private List<ColumnItems> GetColumnItems(string tableschema, string tablename)
@@ -320,7 +343,7 @@ namespace ConnectionHandler
             return type;
         }
 
-        
+
     }
 
     public class ColumnItems
