@@ -147,7 +147,7 @@ namespace ConnectionHandler
                 file.Add("using System;");
                 file.Add("namespace " + nameSpace + ".EntityModels");
                 file.Add("{");
-                file.Add("    [Table(\"" + table[0].TableSchema + "\")]");
+                file.Add("    [GenericRepoModel.Table(\"" + table[0].TableSchema + "\")]");
                 file.Add("    public class " + table[0].TableName);
                 file.Add("    {");
 
@@ -155,11 +155,11 @@ namespace ConnectionHandler
                 {
                     string conditions;
 
-                    if (column.IsNullable) conditions = "false,"; else conditions = "true,";
-                    if (column.IsComputed) conditions += "true,"; else conditions += "false,";
+                    if (column.IsNullable) conditions = "false, "; else conditions = "true,";
+                    if (column.IsComputed) conditions += "true, "; else conditions += "false,";
                     if (column.IsPrimaryKey) conditions += "true"; else conditions += "false";
 
-                    file.Add("        [Column(" + conditions + ")]");
+                    file.Add("        [GenericRepoModel.Column(" + conditions + ")]");
                     file.Add("        public " + ConvertSQLDataTypes(column.Type, column.IsNullable) + " " + column.Name + " { get; set; }");
                     file.Add("");
 
@@ -190,7 +190,7 @@ namespace ConnectionHandler
             foreach (List<ColumnItems> table in tci)
             {
                 List<string> file = new List<string>();
-
+                
                 file.Add("using " + nameSpace + ".EntityModels;");
                 file.Add("using System;");
                 file.Add("using System.Collections.Generic;");
@@ -245,7 +245,7 @@ namespace ConnectionHandler
                 file.Add("using System.Data.SqlClient;");
                 file.Add("namespace " + nameSpace + ".EntityMethods");
                 file.Add("{");
-                file.Add("    public class " + table[0].TableName + "Repository : GenericRepository<" + table[0].TableName + "> , I" + table[0].TableName + "Repository");
+                file.Add("    public class " + table[0].TableName + "Repository : GenericRepo<" + table[0].TableName + "> , I" + table[0].TableName + "Repository");
                 file.Add("    {");
                 file.Add("        string conStr;");
                 file.Add("        public " + table[0].TableName + "Repository(string connection) : base(connection) { conStr = connection; }");
