@@ -1,11 +1,11 @@
-﻿using ConnectionHandler.EntityAbstracts;
-using ConnectionHandler.EntityModels;
+﻿using Parsys.DataLayer.Entities.EntityAbstracts;
+using Parsys.DataLayer.Entities.EntityModels;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 
-namespace ConnectionHandler.EntityMethods
+namespace Parsys.DataLayer.Entities.EntityMethods
 {
     public class GenericRepo<TEntity> : IGenericRepo<TEntity>
     {
@@ -212,14 +212,47 @@ namespace ConnectionHandler.EntityMethods
 
         public List<TEntity> GetAll()
         {
-            string selectPart = "SELECT * FROM [" + tblSchema + "].[" + tblName + "]";
-            return ExecutingReader(selectPart, null);
+            using (SqlConnection con = new SqlConnection(conStr))
+            {
+                con.Open();
+                SqlCommand com = new SqlCommand("SELECT * FROM [" + tblSchema + "].[" + tblName + "]", con);
+                SqlDataReader reader = com.ExecuteReader();
+
+                List<TEntity> entities = new List<TEntity>();
+                while (reader.Read())
+                {
+                    TEntity entity = Activator.CreateInstance<TEntity>();
+                    foreach (var spec in ColumnsSpecifics)
+                    {
+                        if (reader[spec.ColumnName] == DBNull.Value)
+                            spec.ColumnType.SetValue(entity, null);
+                        else
+                            spec.ColumnType.SetValue(entity, reader[spec.ColumnName]);
+                    }
+                    entities.Add(entity);
+                }
+                return entities;
+            }
         }
 
         public TEntity Top()
         {
-            string selectPart = "SELECT TOP(1) * FROM [" + tblSchema + "].[" + tblName + "]";
-            return ExecutingReader(selectPart, null).FirstOrDefault();
+            using (SqlConnection con = new SqlConnection(conStr))
+            {
+                con.Open();
+                SqlCommand com = new SqlCommand("SELECT TOP(1) * FROM [" + tblSchema + "].[" + tblName + "]", con);
+                SqlDataReader reader = com.ExecuteReader();
+                TEntity entity = Activator.CreateInstance<TEntity>();
+                if (reader.Read())
+                    foreach (var spec in ColumnsSpecifics)
+                    {
+                        if (reader[spec.ColumnName] == DBNull.Value)
+                            spec.ColumnType.SetValue(entity, null);
+                        else
+                            spec.ColumnType.SetValue(entity, reader[spec.ColumnName]);
+                    }
+                return entity;
+            }
         }
 
         public int Count()
