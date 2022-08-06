@@ -1,5 +1,5 @@
-﻿using Parsys.DataLayer.Entities.EntityAbstracts;
-using Parsys.DataLayer.Entities.EntityModels;
+﻿using ConnectionHandler.EntityAbstracts;
+using ConnectionHandler.EntityModels;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
