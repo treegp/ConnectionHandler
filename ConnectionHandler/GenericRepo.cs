@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 
-namespace Parsys.DataLayer.Entities.EntityMethods
+namespace ConnectionHandler.EntityMethods
 {
     public class GenericRepo<TEntity> : IGenericRepo<TEntity>
     {
