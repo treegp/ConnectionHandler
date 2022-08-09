@@ -168,18 +168,16 @@ namespace Parsys.DataLayer.Entities.EntityMethods
             List<string> setList = new List<string>();
             List<SqlParameter> parametersList = new List<SqlParameter>();
 
+
             int i = 1;
             foreach (var spec in ColumnsSpecifics)
             {
-
-                if (spec.PrimaryKey)
+                if (spec.ColumnType.GetValue(entity) == null)
+                    continue;
+                else if (spec.PrimaryKey)
                     conditionList.Add("[" + spec.ColumnName + "] = @param" + i);
                 else if (!spec.Computed)
                     setList.Add("[" + spec.ColumnName + "] = @param" + i);
-                else if (spec.Computed)
-                    outputList.Add("[" + spec.ColumnName + "]");
-                else
-                    continue;
 
                 var val = spec.ColumnType.GetValue(entity);
                 if (val == null)
@@ -187,14 +185,17 @@ namespace Parsys.DataLayer.Entities.EntityMethods
 
                 parametersList.Add(new SqlParameter("param" + i, val));
                 i++;
+
+                outputList.Add(spec.ColumnName);
             }
 
 
             string updatePart = "UPDATE [" + tblSchema + "].[" + tblName + "]";
             string setPart = "SET " + string.Join(",", setList);
+            string outputPart = "OUTPUT " + string.Join(",", outputList.Select(c => "inserted.[" + c + "]"));
             string wherePart = "WHERE " + string.Join(",", conditionList);
 
-            string command = string.Join(" ", updatePart, setPart, wherePart);
+            string command = string.Join(" ", updatePart, setPart,outputPart, wherePart);
 
 
             using (SqlConnection con = new SqlConnection(conStr))
@@ -204,7 +205,19 @@ namespace Parsys.DataLayer.Entities.EntityMethods
                 foreach (SqlParameter p in parametersList)
                     com.Parameters.Add(p);
 
-                return com.ExecuteNonQuery();
+                var reader = com.ExecuteReader();
+                TEntity returnEntity = Activator.CreateInstance<TEntity>();
+                if (reader.Read())
+                {
+                    foreach (var spec in outputList)
+                    {
+                        if (reader[spec] == DBNull.Value)
+                            entity.GetType().GetProperty(spec).SetValue(returnEntity, null);
+                        else
+                            entity.GetType().GetProperty(spec).SetValue(returnEntity, reader[spec]);
+                    }
+                }
+                return returnEntity;
             }
 
 
