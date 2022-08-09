@@ -72,7 +72,12 @@ namespace Parsys.DataLayer.Entities.EntityMethods
 
                 columnList.Add(spec.ColumnName);
                 paramList.Add("param" + i);
-                parametersList.Add(new SqlParameter("param" + i, spec.ColumnType.GetValue(entity)));
+
+                var val = spec.ColumnType.GetValue(entity);
+                if (val == null)
+                    val = DBNull.Value;
+
+                parametersList.Add(new SqlParameter("param" + i, val));
                 i++;
             }
 
@@ -109,7 +114,12 @@ namespace Parsys.DataLayer.Entities.EntityMethods
                     continue;
 
                 conditionList.Add("[" + spec.ColumnName + "] = @param" + i);
-                parametersList.Add(new SqlParameter("param" + i, spec.ColumnType.GetValue(entity)));
+
+                var val = spec.ColumnType.GetValue(entity);
+                if (val == null)
+                    val = DBNull.Value;
+
+                parametersList.Add(new SqlParameter("param" + i, val));
                 i++;
             }
 
@@ -150,7 +160,11 @@ namespace Parsys.DataLayer.Entities.EntityMethods
                 else
                     continue;
 
-                parametersList.Add(new SqlParameter("param" + i, spec.ColumnType.GetValue(entity)));
+                var val = spec.ColumnType.GetValue(entity);
+                if (val == null)
+                    val = DBNull.Value;
+
+                parametersList.Add(new SqlParameter("param" + i, val));
                 i++;
             }
 
