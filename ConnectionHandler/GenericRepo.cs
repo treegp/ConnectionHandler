@@ -61,16 +61,20 @@ namespace Parsys.DataLayer.Entities.EntityMethods
         public int Insert(TEntity entity)
         {
             List<string> columnList = new List<string>();
+            List<string> outputList = new List<string>();
             List<string> paramList = new List<string>();
             List<SqlParameter> parametersList = new List<SqlParameter>();
 
             int i = 1;
             foreach (var spec in ColumnsSpecifics)
             {
-                if (spec.Computed | spec.ColumnType.GetValue(entity) == null)
+                if (spec.ColumnType.GetValue(entity) == null)
                     continue;
 
-                columnList.Add(spec.ColumnName);
+                if (spec.Computed)
+                    outputList.Add("[" + spec.ColumnName + "]");
+
+                columnList.Add("["+ spec.ColumnName + "]");
                 paramList.Add("param" + i);
 
                 var val = spec.ColumnType.GetValue(entity);
@@ -82,10 +86,13 @@ namespace Parsys.DataLayer.Entities.EntityMethods
             }
 
             string insertPart = "INSERT INTO [" + tblSchema + "].[" + tblName + "]";
-            string columnPart = "(" + string.Join(",", columnList) + ")";
+            string columnPart = "(" + string.Join(",", columnList.Select(c => "[" + c + "]")) + ")";
+            string outputPart = null;
+            if (outputList.Count != 0)
+                outputPart = "OUTPUT " + string.Join(",", outputList.Select(c => "inserted." + c));
             string paramPart = "VALUES (" + string.Join(",", paramList.Select(c => "@" + c)) + ")";
 
-            string command = string.Join(" ", insertPart, columnPart, paramPart);
+            string command = string.Join(" ", insertPart, columnPart, outputPart, paramPart);
 
 
             using (SqlConnection con = new SqlConnection(conStr))
@@ -146,6 +153,7 @@ namespace Parsys.DataLayer.Entities.EntityMethods
         public int Update(TEntity entity)
         {
             List<string> conditionList = new List<string>();
+            List<string> outputList = new List<string>();
             List<string> setList = new List<string>();
             List<SqlParameter> parametersList = new List<SqlParameter>();
 
@@ -157,6 +165,8 @@ namespace Parsys.DataLayer.Entities.EntityMethods
                     conditionList.Add("[" + spec.ColumnName + "] = @param" + i);
                 else if (!spec.Computed)
                     setList.Add("[" + spec.ColumnName + "] = @param" + i);
+                else if (spec.Computed)
+                    outputList.Add("[" + spec.ColumnName + "]");
                 else
                     continue;
 
