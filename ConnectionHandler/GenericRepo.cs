@@ -272,6 +272,7 @@ namespace ConnectionHandler.EntityMethods
         }
 
 
+
         public List<TEntity> GetAll()
         {
             using (SqlConnection con = new SqlConnection(conStr))
@@ -297,6 +298,8 @@ namespace ConnectionHandler.EntityMethods
             }
         }
 
+
+
         public TEntity Top()
         {
             using (SqlConnection con = new SqlConnection(conStr))
@@ -316,6 +319,8 @@ namespace ConnectionHandler.EntityMethods
                 return entity;
             }
         }
+
+
 
         public int Count()
         {
