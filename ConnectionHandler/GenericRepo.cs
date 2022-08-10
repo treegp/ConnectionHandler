@@ -61,7 +61,6 @@ namespace ConnectionHandler.EntityMethods
         public TEntity Insert(TEntity entity)
         {
             List<string> columnList = new List<string>();
-            List<string> outputList = new List<string>();
             List<string> paramList = new List<string>();
             List<SqlParameter> parametersList = new List<SqlParameter>();
 
@@ -81,12 +80,12 @@ namespace ConnectionHandler.EntityMethods
                     parametersList.Add(new SqlParameter("param" + i, val));
                     i++;
                 }
-                outputList.Add(spec.ColumnName);
+
             }
 
             string insertPart = "INSERT INTO [" + tblSchema + "].[" + tblName + "]";
             string columnPart = "(" + string.Join(",", columnList.Select(c => "[" + c + "]")) + ")";
-            string outputPart = "OUTPUT " + string.Join(",", outputList.Select(c => "inserted.[" + c + "]"));
+            string outputPart = "OUTPUT inserted.*";
             string paramPart = "VALUES (" + string.Join(",", paramList.Select(c => "@" + c)) + ")";
 
             string command = string.Join(" ", insertPart, columnPart, outputPart, paramPart);
@@ -105,12 +104,12 @@ namespace ConnectionHandler.EntityMethods
                 TEntity returnEntity = Activator.CreateInstance<TEntity>();
                 if (reader.Read())
                 {
-                    foreach (var spec in outputList)
+                    foreach (var spec in returnEntity.GetType().GetProperties())
                     {
-                        if (reader[spec] == DBNull.Value)
-                            entity.GetType().GetProperty(spec).SetValue(returnEntity, null);
+                        if (reader[spec.Name] == DBNull.Value)
+                            spec.SetValue(returnEntity, null);
                         else
-                            entity.GetType().GetProperty(spec).SetValue(returnEntity, reader[spec]);
+                            spec.SetValue(returnEntity, reader[spec.Name]);
                     }
                 }
                 return returnEntity;
@@ -123,7 +122,6 @@ namespace ConnectionHandler.EntityMethods
         public TEntity Delete(TEntity entity)
         {
             List<string> conditionList = new List<string>();
-            List<string> outputList = new List<string>();
             List<SqlParameter> parametersList = new List<SqlParameter>();
 
             int i = 1;
@@ -133,7 +131,6 @@ namespace ConnectionHandler.EntityMethods
                     continue;
                 else if (spec.PrimaryKey)
                 {
-
                     conditionList.Add("[" + spec.ColumnName + "] = @param" + i);
 
                     var val = spec.ColumnType.GetValue(entity);
@@ -144,11 +141,10 @@ namespace ConnectionHandler.EntityMethods
                     i++;
                 }
 
-                outputList.Add(spec.ColumnName);
             }
 
             string deletePart = "DELETE FROM [" + tblSchema + "].[" + tblName + "]";
-            string outputPart = "OUTPUT " + string.Join(",", outputList.Select(c => "inserted.[" + c + "]"));
+            string outputPart = "OUTPUT deleted.*";
             string wherePart = "WHERE (" + string.Join(",", conditionList) + ")";
 
             string command = string.Join(" ", deletePart,outputPart, wherePart);
@@ -165,12 +161,12 @@ namespace ConnectionHandler.EntityMethods
                 TEntity returnEntity = Activator.CreateInstance<TEntity>();
                 if (reader.Read())
                 {
-                    foreach (var spec in outputList)
+                    foreach (var spec in returnEntity.GetType().GetProperties())
                     {
-                        if (reader[spec] == DBNull.Value)
-                            entity.GetType().GetProperty(spec).SetValue(returnEntity, null);
+                        if (reader[spec.Name] == DBNull.Value)
+                            spec.SetValue(returnEntity, null);
                         else
-                            entity.GetType().GetProperty(spec).SetValue(returnEntity, reader[spec]);
+                            spec.SetValue(returnEntity, reader[spec.Name]);
                     }
                 }
                 return returnEntity;
@@ -183,7 +179,6 @@ namespace ConnectionHandler.EntityMethods
         public TEntity Update(TEntity entity)
         {
             List<string> conditionList = new List<string>();
-            List<string> outputList = new List<string>();
             List<string> setList = new List<string>();
             List<SqlParameter> parametersList = new List<SqlParameter>();
 
@@ -198,20 +193,20 @@ namespace ConnectionHandler.EntityMethods
                 else if (!spec.Computed)
                     setList.Add("[" + spec.ColumnName + "] = @param" + i);
 
+
+
                 var val = spec.ColumnType.GetValue(entity);
                 if (val == null)
                     val = DBNull.Value;
 
                 parametersList.Add(new SqlParameter("param" + i, val));
                 i++;
-
-                outputList.Add(spec.ColumnName);
             }
 
 
             string updatePart = "UPDATE [" + tblSchema + "].[" + tblName + "]";
             string setPart = "SET " + string.Join(",", setList);
-            string outputPart = "OUTPUT " + string.Join(",", outputList.Select(c => "inserted.[" + c + "]"));
+            string outputPart = "OUTPUT inserted.*";
             string wherePart = "WHERE " + string.Join(",", conditionList);
 
             string command = string.Join(" ", updatePart, setPart,outputPart, wherePart);
@@ -228,12 +223,12 @@ namespace ConnectionHandler.EntityMethods
                 TEntity returnEntity = Activator.CreateInstance<TEntity>();
                 if (reader.Read())
                 {
-                    foreach (var spec in outputList)
+                    foreach (var spec in returnEntity.GetType().GetProperties())
                     {
-                        if (reader[spec] == DBNull.Value)
-                            entity.GetType().GetProperty(spec).SetValue(returnEntity, null);
+                        if (reader[spec.Name] == DBNull.Value)
+                            spec.SetValue(returnEntity, null);
                         else
-                            entity.GetType().GetProperty(spec).SetValue(returnEntity, reader[spec]);
+                            spec.SetValue(returnEntity, reader[spec.Name]);
                     }
                 }
                 return returnEntity;
