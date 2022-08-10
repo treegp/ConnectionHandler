@@ -120,31 +120,38 @@ namespace ConnectionHandler.EntityMethods
 
 
         //DELETE FROM [dbo].[****] WHERE [Id]=1 , ...
-        public int Delete(TEntity entity)
+        public TEntity Delete(TEntity entity)
         {
             List<string> conditionList = new List<string>();
+            List<string> outputList = new List<string>();
             List<SqlParameter> parametersList = new List<SqlParameter>();
 
             int i = 1;
             foreach (var spec in ColumnsSpecifics)
             {
-                if (!spec.PrimaryKey)
+                if (spec.ColumnType.GetValue(entity) == null)
                     continue;
+                else if (spec.PrimaryKey)
+                {
 
-                conditionList.Add("[" + spec.ColumnName + "] = @param" + i);
+                    conditionList.Add("[" + spec.ColumnName + "] = @param" + i);
 
-                var val = spec.ColumnType.GetValue(entity);
-                if (val == null)
-                    val = DBNull.Value;
+                    var val = spec.ColumnType.GetValue(entity);
+                    if (val == null)
+                        val = DBNull.Value;
 
-                parametersList.Add(new SqlParameter("param" + i, val));
-                i++;
+                    parametersList.Add(new SqlParameter("param" + i, val));
+                    i++;
+                }
+
+                outputList.Add(spec.ColumnName);
             }
 
             string deletePart = "DELETE FROM [" + tblSchema + "].[" + tblName + "]";
+            string outputPart = "OUTPUT " + string.Join(",", outputList.Select(c => "inserted.[" + c + "]"));
             string wherePart = "WHERE (" + string.Join(",", conditionList) + ")";
 
-            string command = string.Join(" ", deletePart, wherePart);
+            string command = string.Join(" ", deletePart,outputPart, wherePart);
 
 
             using (SqlConnection con = new SqlConnection(conStr))
@@ -154,7 +161,19 @@ namespace ConnectionHandler.EntityMethods
                 foreach (SqlParameter p in parametersList)
                     com.Parameters.Add(p);
 
-                return com.ExecuteNonQuery();
+                var reader = com.ExecuteReader();
+                TEntity returnEntity = Activator.CreateInstance<TEntity>();
+                if (reader.Read())
+                {
+                    foreach (var spec in outputList)
+                    {
+                        if (reader[spec] == DBNull.Value)
+                            entity.GetType().GetProperty(spec).SetValue(returnEntity, null);
+                        else
+                            entity.GetType().GetProperty(spec).SetValue(returnEntity, reader[spec]);
+                    }
+                }
+                return returnEntity;
             }
 
         }
